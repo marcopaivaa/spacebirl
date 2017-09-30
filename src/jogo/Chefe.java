@@ -23,9 +23,9 @@ public class Chefe extends Base {
     private BufferedImage boss;
     private int maxLife = 40;
     
-    public Chefe(int x, int y, int largura, int altura, Color color) {
+    public Chefe(int x, int y, int largura, int altura, Color color, double proporcaoX) {
         super(x, y, largura, altura, color);
-        incX = 3;
+        incX = (int)Math.ceil(3 * proporcaoX);
         vida = maxLife;
         try {
             boss = ImageIO.read(new File("./src/imagens/boss.png"));

@@ -22,10 +22,10 @@ public class Bola extends Base{
      
     private BufferedImage inimigo;
     
-     public Bola(int x, int y, int largura, int altura, Color color)
+     public Bola(int x, int y, int largura, int altura, Color color, double proporcaoX)
      {
          super(x, y, largura, altura, color);
-         incX = 2;
+         incX = (int)Math.ceil(2 * proporcaoX);
          vida = 1;
          try {
             inimigo = ImageIO.read(new File("./src/imagens/inimigo.gif"));
