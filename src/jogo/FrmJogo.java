@@ -5,12 +5,14 @@
  */
 package jogo;
 
-import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
+import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferStrategy;
+import javax.swing.JFrame;
+
 
 /**
  *
@@ -25,13 +27,23 @@ public class FrmJogo extends javax.swing.JFrame implements Runnable {
     private boolean reiniciar = false;
     private boolean especial = false;
     private boolean tiro;
+    private double  proporcaoX, proporcaoY;
     
     /**
      * Creates new form FrmJogo
      */
     public FrmJogo() {
+        Toolkit tk = Toolkit.getDefaultToolkit();
+        Dimension d = tk.getScreenSize();
+        proporcaoX = d.width/1920.0;
+        proporcaoY = d.height/1080.0;
+//        proporcaoX = 800/1920.0;
+//        proporcaoY = 600/1080.0;
+        
+        System.out.println(this.proporcaoX);
+        System.out.println(this.proporcaoY);
+        
         initComponents();
-
         //Constroi um buffer duplo
         createBufferStrategy(2);
 
@@ -42,6 +54,28 @@ public class FrmJogo extends javax.swing.JFrame implements Runnable {
         t.start();
 
     }
+    
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+        java.awt.EventQueue.invokeLater(new Runnable() {
+
+            public void run() {
+                Toolkit tk = Toolkit.getDefaultToolkit();
+                Dimension d = tk.getScreenSize();
+                double proporcaoX = d.width/1920.0;
+                double proporcaoY = d.height/1080.0;
+//                proporcaoX = 800/1920.0;
+//                proporcaoY = 600/1080.0;
+                FrmJogo jf = new FrmJogo();
+//                jf.setSize((int)Math.ceil(1280 * proporcaoX),(int)Math.ceil(800 * proporcaoY));
+                jf.setSize(d.width,d.height);
+//                jf.setExtendedState(MAXIMIZED_BOTH);
+                jf.setVisible(true);
+            }
+        });
+    }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -49,9 +83,12 @@ public class FrmJogo extends javax.swing.JFrame implements Runnable {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("SpaceBirl");
         setBounds(new java.awt.Rectangle(0, 0, 1024, 768));
-        setLocation(new java.awt.Point(300, 150));
+        setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        setLocation(new java.awt.Point(0, 0));
+        setUndecorated(true);
         setPreferredSize(new java.awt.Dimension(1280, 800));
         setResizable(false);
+        setSize(getSize());
         addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 formKeyPressed(evt);
@@ -139,39 +176,21 @@ public class FrmJogo extends javax.swing.JFrame implements Runnable {
         
     }//GEN-LAST:event_formKeyReleased
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-
-            public void run() {
-                new FrmJogo().setVisible(true);
-
-            }
-        });
-    }
-
     public void run() {
 
         BufferStrategy buffer = getBufferStrategy();
         Graphics bg;
 
-        
-       
-        Game g = new Game(getWidth(), getHeight());
+        Game g = new Game(getWidth(),getHeight(), proporcaoX, proporcaoY);
         bg = buffer.getDrawGraphics();
         g.initGame(bg);
-       
-        
-        
-        
+
         while (true) {
 
             //Aloca o Graphics
             bg = buffer.getDrawGraphics();
 
-            bg.setFont(new Font("Dialog",Font.ITALIC,25));
+            bg.setFont(new Font("Dialog",Font.ITALIC,(int)Math.ceil(25 * proporcaoY)));
             
             g.upDate(bg);
             g.setPlayerActions(direito, esquerdo, cima, baixo, reiniciar, tiro, especial, bg);
