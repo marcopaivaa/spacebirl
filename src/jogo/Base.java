@@ -145,4 +145,8 @@ public abstract class Base {
     public boolean isEspecial(){
          return false;
      }
+
+    public int getTipo() {
+       return 0;
+    }
 }

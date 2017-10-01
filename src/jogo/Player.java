@@ -24,13 +24,23 @@ public class Player extends Base{
     private BufferedImage player_shield;
     private int bonus = 0;
     private boolean speedAtivo = false;
+    private int tipPlayer = 0;
     
-     public Player(int x, int y, int largura, int altura, Color color)
+     public Player(int x, int y, int largura, int altura, Color color, int tipPlayer)
      {
          super(x, y, largura, altura, color);
+         this.tipPlayer = tipPlayer;
          try {
-            player = ImageIO.read(new File("./src/imagens/player.png"));
-            player_shield = ImageIO.read(new File("./src/imagens/player-shield.png"));
+            if(tipPlayer == 0){
+               player = ImageIO.read(new File("./src/imagens/player.png"));
+               player_shield = ImageIO.read(new File("./src/imagens/player-shield.png")); 
+            }else if(tipPlayer == 1){
+               player = ImageIO.read(new File("./src/imagens/player1.png"));
+               player_shield = ImageIO.read(new File("./src/imagens/player1-shield.png")); 
+            }else{
+               player = ImageIO.read(new File("./src/imagens/player2.png"));
+               player_shield = ImageIO.read(new File("./src/imagens/player2-shield.png")); 
+            }
         } catch (IOException ex) {
             Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -90,6 +100,10 @@ public class Player extends Base{
     @Override
     public void toggleSpeedAtivo(){
         this.speedAtivo = !this.speedAtivo;
+    }
+    
+    public int getTipo(){
+        return this.tipPlayer;
     }
 }
 
