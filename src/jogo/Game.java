@@ -65,11 +65,6 @@ public class Game  {
         this.altura = altura;
         this.proporcaoX = proporcaoX;
         this.proporcaoY = proporcaoY;
-<<<<<<< HEAD
-        System.out.println(this.proporcaoX);
-        System.out.println(this.proporcaoY);
-=======
->>>>>>> dev-Marco
         initConfig();
         try {
             img = ImageIO.read(new File("./src/imagens/background.jpg"));
@@ -101,17 +96,11 @@ public class Game  {
         boss = false;
         tiro = false;
         hasBonus = false;
-<<<<<<< HEAD
-        nivel = 3;
-        countSuper = 95;
-        minTimeBonus = 10000;
-=======
         nivelCount = 0;
         placar = 0;
         nivel = 1;
         countSuper = 0;
         minTimeBonus = 5000;
->>>>>>> dev-Marco
         bonusLimit = 1;
         ultimoTiro = System.currentTimeMillis();
         ultimoTiroBoss = System.currentTimeMillis();
@@ -124,11 +113,7 @@ public class Game  {
     
     public boolean verificaPonto(ArrayList<Point> list,int x,int y){
         for(Point p: list){
-<<<<<<< HEAD
-            if(((x >= p.x && x <= p.x + (int)Math.ceil(70 * proporcaoX)) || x < (int)Math.ceil(10 * proporcaoX)) && ((y >= p.y && y <= p.y + (int)Math.ceil(70 * proporcaoY)) || y < (int)Math.ceil(80 * proporcaoY)))
-=======
             if((y >= p.y && y <= p.y + (int)Math.ceil(70 * proporcaoY)) || y < (int)Math.ceil(80 * proporcaoY))
->>>>>>> dev-Marco
                 return true;
         }
         return false;
@@ -144,16 +129,6 @@ public class Game  {
         int x,y;
         if(System.currentTimeMillis() - timeBola >= 3000 && boss == false && objetos.size() < 50){
             for(int i = 0; i < nivel; i++){
-<<<<<<< HEAD
-                for(int j = 0; j < 10; j++){
-                    do{
-                        x = r.nextInt(largura-(int)Math.ceil(60 * proporcaoX));
-                        y = r.nextInt(altura/2);
-                    }while(verificaPonto(pontos,x,y));
-                    add(new Bola(x, y, (int)Math.ceil(70 * proporcaoY), (int)Math.ceil(70 * proporcaoY), Color.WHITE, proporcaoX));
-                    pontos.add(new Point(x,y));
-                }
-=======
                 do{
                     x = r.nextInt(2);
                     x = x == 0 ? -50 : this.largura;
@@ -161,7 +136,6 @@ public class Game  {
                 }while(verificaPonto(pontos,x,y));
                 add(new Bola(x, y, (int)Math.ceil(70 * proporcaoY), (int)Math.ceil(70 * proporcaoY), Color.WHITE, proporcaoX));
                 pontos.add(new Point(x,y));
->>>>>>> dev-Marco
             }
             timeBola = System.currentTimeMillis();
         }
@@ -178,10 +152,7 @@ public class Game  {
     public void setPlayer(Base player) {
         this.player = player;
     }
-<<<<<<< HEAD
-=======
     
->>>>>>> dev-Marco
 
     public void upDate(Graphics bg)
     {
@@ -272,15 +243,9 @@ public class Game  {
                                 Graphics bg) {
             
             if (direito && player.getX() < largura - player.getLargura()) {
-<<<<<<< HEAD
-                player.setIncX((int)Math.ceil(2 * proporcaoX));
-            } else if (esquerdo && player.getX() > 0) {
-                player.setIncX((int)Math.ceil(2 * proporcaoX)*-1);
-=======
                 player.setIncX((int)Math.ceil(3 * proporcaoX));
             } else if (esquerdo && player.getX() > 0) {
                 player.setIncX((int)Math.ceil(3 * proporcaoX)*-1);
->>>>>>> dev-Marco
             } else {
                 player.setIncX(0);
             }
@@ -390,10 +355,7 @@ public class Game  {
         long min = ms/60000;
         long seg = (ms%60000)/1000;
         bg.drawString("Tempo: " + String.format("%02d:%02d", min, seg),(int)(this.largura*.8),(int)(this.altura*.95));
-<<<<<<< HEAD
-=======
         bg.drawString("Placar: " + placar,(int)(this.largura*.45),(int)(this.altura*.95));
->>>>>>> dev-Marco
         
         if(countSuper < 100){
             if(lastCount + 500 < System.currentTimeMillis()){
@@ -493,17 +455,6 @@ public class Game  {
         
         bg.setColor(Color.WHITE);
         String msg = "QUE NÃO VAI DAR O QUE PORRA! - Tecla 'R' para reiniciar.";
-<<<<<<< HEAD
-        bg.drawString(msg,(int)Math.ceil(20 * proporcaoX),(int)Math.ceil(100 * proporcaoY));
-    }
-    
-    private void venceuJogo(Graphics bg) {
-        
-        bg.setColor(Color.WHITE);
-        String msg = "Você venceu o jogo, BIRL! - Tecla 'R' para reiniciar.";
-        bg.drawString(msg,(int)Math.ceil(20 * proporcaoX),(int)Math.ceil(100 * proporcaoY));
-    }
-=======
         bg.drawString(msg,(int)(largura * .30),(int)(altura * .45));
         msg = "Sua pontuação: " + placar;
         bg.drawString(msg,(int)(largura * .42),(int)(altura * .55));
@@ -515,7 +466,6 @@ public class Game  {
 //        String msg = "Você venceu o jogo, BIRL! - Tecla 'R' para reiniciar.";
 //        bg.drawString(msg,(int)Math.ceil(20 * proporcaoX),(int)Math.ceil(100 * proporcaoY));
 //    }
->>>>>>> dev-Marco
 
     private void tentaTiro() {
       if(tiro)

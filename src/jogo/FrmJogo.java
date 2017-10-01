@@ -28,10 +28,7 @@ public class FrmJogo extends javax.swing.JFrame implements Runnable {
     private boolean especial = false;
     private boolean tiro;
     private double  proporcaoX, proporcaoY;
-<<<<<<< HEAD
-=======
     private boolean restart = false;
->>>>>>> dev-Marco
     
     /**
      * Creates new form FrmJogo
@@ -41,14 +38,6 @@ public class FrmJogo extends javax.swing.JFrame implements Runnable {
         Dimension d = tk.getScreenSize();
         proporcaoX = d.width/1920.0;
         proporcaoY = d.height/1080.0;
-<<<<<<< HEAD
-//        proporcaoX = 800/1920.0;
-//        proporcaoY = 600/1080.0;
-        
-        System.out.println(this.proporcaoX);
-        System.out.println(this.proporcaoY);
-=======
->>>>>>> dev-Marco
         
         initComponents();
         //Constroi um buffer duplo
@@ -65,26 +54,15 @@ public class FrmJogo extends javax.swing.JFrame implements Runnable {
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
+  public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
 
             public void run() {
                 Toolkit tk = Toolkit.getDefaultToolkit();
                 Dimension d = tk.getScreenSize();
-<<<<<<< HEAD
-                double proporcaoX = d.width/1920.0;
-                double proporcaoY = d.height/1080.0;
-//                proporcaoX = 800/1920.0;
-//                proporcaoY = 600/1080.0;
-                FrmJogo jf = new FrmJogo();
-//                jf.setSize((int)Math.ceil(1280 * proporcaoX),(int)Math.ceil(800 * proporcaoY));
-                jf.setSize(d.width,d.height);
-//                jf.setExtendedState(MAXIMIZED_BOTH);
-=======
 
                 FrmJogo jf = new FrmJogo();
                 jf.setSize(d.width,d.height);
->>>>>>> dev-Marco
                 jf.setVisible(true);
             }
         });
@@ -189,22 +167,15 @@ public class FrmJogo extends javax.swing.JFrame implements Runnable {
         
     }//GEN-LAST:event_formKeyReleased
 
+   
     public void run() {
 
         BufferStrategy buffer = getBufferStrategy();
         Graphics bg;
-<<<<<<< HEAD
-
-        Game g = new Game(getWidth(),getHeight(), proporcaoX, proporcaoY);
-        bg = buffer.getDrawGraphics();
-        g.initGame(bg);
-
-=======
         Game g = new Game(getWidth(),getHeight(), proporcaoX, proporcaoY);
         bg = buffer.getDrawGraphics();
         g.initConfig();
         
->>>>>>> dev-Marco
         while (true) {
 
             if(restart){
