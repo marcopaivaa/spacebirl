@@ -41,7 +41,7 @@ public abstract class Base {
         this.x = x + incX;
         rect.x = x;
         
-        if(this.x + this.largura >= w || this.x <= 0 ){
+        if(this.x >= w || this.x + this.largura <= 0 ){
             this.y = y + incY;
             rect.y = y;
         }
