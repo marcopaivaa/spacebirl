@@ -27,10 +27,19 @@ public class FrmJogo extends javax.swing.JFrame implements Runnable {
     private boolean reiniciar   = false;
     private boolean especial    = false;
     private boolean tiro;
+    private boolean esquerdo2    = false;
+    private boolean direito2     = false;
+    private boolean baixo2       = false;
+    private boolean cima2        = false;
+    private boolean especial2    = false;
+    private boolean tiro2;
     private double  proporcaoX, proporcaoY;
     private boolean restart = false;
     private boolean menu    = true;
     private boolean sair = false;
+    private boolean multi = false;
+    private boolean flag = false;
+
     /**
      * Creates new form FrmJogo
      */
@@ -55,7 +64,8 @@ public class FrmJogo extends javax.swing.JFrame implements Runnable {
     /**
      * @param args the command line arguments
      */
-  public static void main(String args[]) {
+
+public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
 
             public void run() {
@@ -105,10 +115,10 @@ public class FrmJogo extends javax.swing.JFrame implements Runnable {
     }// </editor-fold>//GEN-END:initComponents
 
     private void formKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyPressed
-
         if(evt.getExtendedKeyCode() == KeyEvent.VK_ENTER){
             if(menu){
                 menu = false;
+                multi = false;
             }
         }
         
@@ -116,38 +126,67 @@ public class FrmJogo extends javax.swing.JFrame implements Runnable {
             sair = true;
         }
         
+        if(evt.getKeyCode() == KeyEvent.VK_M){
+            if(menu){
+                multi = true;
+                menu = false;
+                flag = true;
+            }
+        }
+        
+        if(evt.getKeyCode() == KeyEvent.VK_NUMPAD0){
+            tiro2 = true;
+        }
+        
         if (evt.getKeyCode() == KeyEvent.VK_SPACE) {
             tiro = true;
         }
 
+        if (evt.getKeyCode() == KeyEvent.VK_DECIMAL) {
+            especial2 = true;
+        }
+        
         if (evt.getKeyCode() == KeyEvent.VK_SHIFT) {
             especial = true;
         }
         
         if (evt.getKeyCode() == KeyEvent.VK_LEFT) {
-            esquerdo = true;
+            esquerdo2 = true;
         }
 
         if (evt.getKeyCode() == KeyEvent.VK_RIGHT) {
-            direito = true;
+            direito2 = true;
         }
         
         if (evt.getKeyCode() == KeyEvent.VK_UP) {
-            cima = true;
+            cima2 = true;
         }
         
         if (evt.getKeyCode() == KeyEvent.VK_DOWN) {
+            baixo2 = true;
+        }
+        
+        if (evt.getKeyCode() == KeyEvent.VK_A) {
+            esquerdo = true;
+        }
+
+        if (evt.getKeyCode() == KeyEvent.VK_D) {
+            direito = true;
+        }
+        
+        if (evt.getKeyCode() == KeyEvent.VK_W) {
+            cima = true;
+        }
+        
+        if (evt.getKeyCode() == KeyEvent.VK_S) {
             baixo = true;
         }
 
         if(evt.getKeyCode()  == KeyEvent.VK_R)
             reiniciar = true;
-            
-
     }//GEN-LAST:event_formKeyPressed
 
     private void formKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyReleased
-
         if (evt.getKeyCode()  == KeyEvent.VK_SPACE) {
             tiro = false;
         }
@@ -157,40 +196,73 @@ public class FrmJogo extends javax.swing.JFrame implements Runnable {
         }
 
         if (evt.getKeyCode()  == KeyEvent.VK_LEFT) {
-            esquerdo = false;
+            esquerdo2 = false;
         }
 
         if (evt.getKeyCode()  == KeyEvent.VK_RIGHT) {
-            direito = false;
+            direito2 = false;
         }
         
          if (evt.getKeyCode() == KeyEvent.VK_UP) {
-            cima = false;
+            cima2 = false;
         }
         
         if (evt.getKeyCode()  == KeyEvent.VK_DOWN) {
+            baixo2 = false;
+        }
+        
+        if (evt.getKeyCode()  == KeyEvent.VK_NUMPAD0) {
+            tiro2 = false;
+        }
+        
+        if (evt.getKeyCode()  == KeyEvent.VK_DECIMAL) {
+            especial2 = false;
+        }
+
+        if (evt.getKeyCode()  == KeyEvent.VK_A) {
+            esquerdo = false;
+        }
+
+        if (evt.getKeyCode()  == KeyEvent.VK_D) {
+            direito = false;
+        }
+        
+         if (evt.getKeyCode() == KeyEvent.VK_W) {
+            cima = false;
+        }
+        
+        if (evt.getKeyCode()  == KeyEvent.VK_S) {
             baixo = false;
         }
 
         if(evt.getKeyCode()   == KeyEvent.VK_R)
             reiniciar = false;
-        
     }//GEN-LAST:event_formKeyReleased
 
-   
     public void run() {
-
         BufferStrategy buffer = getBufferStrategy();
         Graphics bg;
-        Game g = new Game(getWidth(),getHeight(), proporcaoX, proporcaoY);
+        Game g;
+        g = multi ? new Multiplayer(getWidth(),getHeight(), proporcaoX, proporcaoY)
+                  : new Game(getWidth(),getHeight(), proporcaoX, proporcaoY);
         bg = buffer.getDrawGraphics();
         g.initConfig();
         
         while (true) {
 
             if(sair){
-                this.dispose();
-                System.exit(0);
+                if(menu){
+                    this.dispose();
+                    System.exit(0);
+                }else{
+                    restart = true;
+                    sair = false;
+                } 
+            }
+            
+            if(flag){
+                flag = false;
+                g = new Multiplayer(getWidth(),getHeight(), proporcaoX, proporcaoY);
             }
             
             if(restart){
@@ -198,6 +270,7 @@ public class FrmJogo extends javax.swing.JFrame implements Runnable {
                 g.menu(bg);
                 menu = true;
                 restart = false;
+                multi = false;
             }
             
             //Aloca o Graphics
@@ -206,12 +279,14 @@ public class FrmJogo extends javax.swing.JFrame implements Runnable {
             bg.setFont(new Font("Dialog",Font.ITALIC,(int)Math.ceil(25 * proporcaoY)));
             
             if(!menu){
-                g.upDate(bg);
+                    g.upDate(bg);
             }else{
                 g.menu(bg);
             }
             
-            restart = g.setPlayerActions(direito, esquerdo, cima, baixo, reiniciar, tiro, especial, bg);
+            restart = g.setPlayerActions(direito, esquerdo, cima, baixo, tiro, especial,
+                                         direito2, esquerdo2, cima2, baixo2, tiro2, especial2,
+                                         reiniciar, bg);
 
             //Libera o Graphics
             bg.dispose();

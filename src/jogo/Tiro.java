@@ -24,16 +24,28 @@ public class Tiro extends Base {
     private BufferedImage boss;
     private BufferedImage player_especial;
     private boolean especial;
+    private int tipTiro;
 
-    public Tiro(int x, int y, int largura, int altura, Color color, boolean especial)
+    public Tiro(int x, int y, int largura, int altura, Color color, boolean especial, int tipTipo)
      {
          super(x, y, largura, altura, color);
          vida = 5;
          this.especial = especial;
+         this.tipTiro = tipTipo;
          try {
-            player = ImageIO.read(new File("./src/imagens/player-shoot.png"));
-            player_especial = ImageIO.read(new File("./src/imagens/super.png"));
-            boss = ImageIO.read(new File("./src/imagens/boss-shoot.png"));
+            if(tipTiro == 0){
+                player = ImageIO.read(new File("./src/imagens/player-shoot.png"));
+                player_especial = ImageIO.read(new File("./src/imagens/super.png"));
+                boss = ImageIO.read(new File("./src/imagens/boss-shoot.png"));
+            }
+            else if( tipTiro == 1){
+                player = ImageIO.read(new File("./src/imagens/player1-shoot.png"));
+                player_especial = ImageIO.read(new File("./src/imagens/super1.png"));
+            }
+            else {
+                player = ImageIO.read(new File("./src/imagens/player2-shoot.png"));
+                player_especial = ImageIO.read(new File("./src/imagens/super2.png"));
+            }
         } catch (IOException ex) {
             Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -42,8 +54,14 @@ public class Tiro extends Base {
      @Override
      public void desenhar(Graphics g)
      {
+          BufferedImage img;
           g.setColor(color);
-          BufferedImage img = (color.RED == color) ? boss : player;
+          if(tipTiro == 0){
+            img = (color.RED == color) ? boss : player;
+          }
+          else{
+            img = player;  
+          }
           img = especial ? player_especial : img;
           g.drawImage(img, x, y, largura, altura, null);
      }

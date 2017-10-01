@@ -19,47 +19,47 @@ import java.awt.Point;
  */
 public class Game  {
     
-    private ArrayList<Base> objetos;
-    private ArrayList <Base> lixo;
-    private Base player;
-    private int largura;
-    private int altura;
-    private boolean tiro;
-    private boolean fimDeJogo;
-    private boolean venceu;
-    private long ultimoTiro;
-    private long ultimoTiroBoss;
-    private long ultimoBonus;
-    private long minTimeBonus;
-    private int bonusLimit;
-    private boolean hasBonus;
-    private long speedtime;
-    private int nivelCount;
-    private int nivel;
-    private int placar;
-    private int countSuper ;
-    private long lastCount;
+    ArrayList<Base> objetos;
+    ArrayList <Base> lixo;
+    Base player;
+    int largura;
+    int altura;
+    boolean tiro;
+    boolean fimDeJogo;
+    long ultimoTiro;
+    long ultimoTiroBoss;
+    long ultimoBonus;
+    long minTimeBonus;
+    int bonusLimit;
+    boolean hasBonus;
+    long speedtime;
+    int nivelCount;
+    int nivel;
+    int placar;
+    int countSuper ;
+    long lastCount;
     private BufferedImage img;
-    private BufferedImage life;
+    BufferedImage life;
     private BufferedImage empty_start;
     private BufferedImage empty_mid;
     private BufferedImage empty_end;
     private BufferedImage full_start;
     private BufferedImage full_mid;
     private BufferedImage full_end; 
-    private BufferedImage bonus; 
-    private BufferedImage bonus_shield; 
-    private BufferedImage bonus_speed; 
-    private BufferedImage super_portrait; 
-    private BufferedImage shift;
+    BufferedImage bonus; 
+    BufferedImage bonus_shield; 
+    BufferedImage bonus_speed; 
+    BufferedImage super_portrait; 
+    BufferedImage shift;
     private BufferedImage menu;
-    private long timeBola;
-    private long timeChefe;
-    private boolean boss;
+    long timeBola;
+    long timeChefe;
+    boolean boss;
     private Chefe chefe;
-    private long inicio;
-    private Random r;
-    private double proporcaoX, proporcaoY;
+    long inicio;
+    Random r;
+    double proporcaoX;
+    double proporcaoY;
 
     public Game(int largura, int altura, double proporcaoX, double proporcaoY) {
         this.largura = largura;
@@ -88,12 +88,12 @@ public class Game  {
     }
     
     public void initConfig(){
-        player = new Player(largura / 2 - (int)Math.ceil(40 * proporcaoX), altura - (int)Math.ceil(190 * proporcaoY), (int)Math.ceil(100 * proporcaoX), (int)Math.ceil(80 * proporcaoY), Color.WHITE);
+        player = new Player(largura / 2 - (int)Math.ceil(40 * proporcaoX), altura - (int)Math.ceil(190 * proporcaoY),
+                (int)Math.ceil(100 * proporcaoX), (int)Math.ceil(80 * proporcaoY), Color.WHITE, 0);
         objetos = new ArrayList<Base>();
         lixo = new ArrayList<Base>();
         r = new Random();
         fimDeJogo = false;
-        venceu = false;
         boss = false;
         boss = false;
         tiro = false;
@@ -238,14 +238,9 @@ public class Game  {
         objetos.add(b);
     }
 
-    public boolean setPlayerActions(boolean direito,
-                                boolean esquerdo,
-                                boolean cima,
-                                boolean baixo,
-                                boolean reiniciar, 
-                                boolean tiro,
-                                boolean especial,
-                                Graphics bg) {
+    public boolean setPlayerActions(boolean direito,boolean esquerdo,boolean cima,boolean baixo,boolean tiro,boolean especial,
+                                     boolean direito2,boolean esquerdo2,boolean cima2,boolean baixo2,boolean tiro2,boolean especial2,
+                                     boolean reiniciar,Graphics bg){
             
             if (direito && player.getX() < largura - player.getLargura()) {
                 player.setIncX((int)Math.ceil(3 * proporcaoX));
@@ -264,7 +259,7 @@ public class Game  {
             }
             
             if(especial && countSuper >= 99){
-                Tiro t = new Tiro(player.x + player.largura/2, player.y-(int)Math.ceil(60 * proporcaoY), (int)Math.ceil(80 * proporcaoX),(int)Math.ceil(60 * proporcaoY),Color.WHITE, true);
+                Tiro t = new Tiro(player.x + player.largura/2, player.y-(int)Math.ceil(60 * proporcaoY), (int)Math.ceil(80 * proporcaoX),(int)Math.ceil(60 * proporcaoY),Color.WHITE, true, 0);
                 t.incX=0;
                 t.incY=(int)Math.ceil(-4 * proporcaoY);
                 objetos.add(t);
@@ -299,7 +294,7 @@ public class Game  {
         }
     }
 
-    private void verificarColisaoComPlayer() {
+    public void verificarColisaoComPlayer() {
             for(Base b: objetos)
             {
                 if(player.colisaoCom(b))
@@ -328,7 +323,7 @@ public class Game  {
             }
     }
 
-    private void verificarColisaoComGame() {
+    public void verificarColisaoComGame() {
 
         for(Base b: objetos)
         {
@@ -354,7 +349,7 @@ public class Game  {
         }
     }
 
-    private void desenharPlacar(Graphics bg) {
+    public void desenharPlacar(Graphics bg) {
         bg.setColor(Color.WHITE);
         long ms = System.currentTimeMillis() - inicio;
         long min = ms/60000;
@@ -438,7 +433,7 @@ public class Game  {
         }
     }
 
-    private void verificarFim() {
+    public void verificarFim() {
     
            if(player.getLife() == 0)
            {
@@ -456,7 +451,7 @@ public class Game  {
         
     }
 
-    private void fimDeJogo(Graphics bg) {
+    public void fimDeJogo(Graphics bg) {
         
         bg.setColor(Color.WHITE);
         String msg = "QUE NÃO VAI DAR O QUE PORRA! - Tecla 'R' para voltar ao menu.";
@@ -464,15 +459,8 @@ public class Game  {
         msg = "Sua pontuação: " + placar;
         bg.drawString(msg,(int)(largura * .42),(int)(altura * .55));
     }
-    
-//    private void venceuJogo(Graphics bg) {
-//        
-//        bg.setColor(Color.WHITE);
-//        String msg = "Você venceu o jogo, BIRL! - Tecla 'R' para reiniciar.";
-//        bg.drawString(msg,(int)Math.ceil(20 * proporcaoX),(int)Math.ceil(100 * proporcaoY));
-//    }
 
-    private void tentaTiro() {
+    public void tentaTiro() {
       if(tiro)
       {
         long tempoAtual = System.currentTimeMillis();
@@ -482,7 +470,7 @@ public class Game  {
             if(player.getSpeedAtivo())
                 multiplicador = 2;
             ultimoTiro = tempoAtual;
-            Tiro t = new Tiro(player.x + player.largura/2, player.y-(int)Math.ceil(20 * proporcaoY), (int)Math.ceil(20 * proporcaoX),(int)Math.ceil(20 * proporcaoY),Color.WHITE, false);
+            Tiro t = new Tiro(player.x + player.largura/2, player.y-(int)Math.ceil(20 * proporcaoY), (int)Math.ceil(20 * proporcaoX),(int)Math.ceil(20 * proporcaoY),Color.WHITE, false, 0);
             t.incX=0;
             t.incY=(int)Math.ceil((-3 * multiplicador) * proporcaoY);
             objetos.add(t);
@@ -496,7 +484,7 @@ public class Game  {
         if(tempoAtual >  ultimoTiroBoss + 1000)
         {
             ultimoTiroBoss = tempoAtual;
-            Tiro t = new Tiro(chefe.x + chefe.largura/2, chefe.y+chefe.altura, (int)Math.ceil(40 * proporcaoX), (int)Math.ceil(40 * proporcaoY),Color.RED, false);
+            Tiro t = new Tiro(chefe.x + chefe.largura/2, chefe.y+chefe.altura, (int)Math.ceil(40 * proporcaoX), (int)Math.ceil(40 * proporcaoY),Color.RED, false, 0);
             t.incX=0;
             t.incY=(int)Math.ceil(3 * proporcaoY);
             objetos.add(t);
@@ -505,7 +493,7 @@ public class Game  {
       
     }
 
-    private void verificaTiro(Graphics bg) {
+    public void verificaTiro(Graphics bg) {
         for(Base x: objetos)
             for(Base y: objetos)
                 if(x.colisaoCom(y) && x instanceof Tiro)
