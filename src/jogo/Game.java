@@ -52,6 +52,7 @@ public class Game  {
     private BufferedImage bonus_speed; 
     private BufferedImage super_portrait; 
     private BufferedImage shift;
+    private BufferedImage menu;
     private long timeBola;
     private long timeChefe;
     private boolean boss;
@@ -67,6 +68,7 @@ public class Game  {
         this.proporcaoY = proporcaoY;
         initConfig();
         try {
+            menu = ImageIO.read(new File("./src/imagens/menuSpace.png"));
             img = ImageIO.read(new File("./src/imagens/background.jpg"));
             life = ImageIO.read(new File("./src/imagens/life.png"));
             empty_start = ImageIO.read(new File("./src/imagens/life_boss_empty_start.png"));
@@ -153,6 +155,9 @@ public class Game  {
         this.player = player;
     }
     
+    public void menu(Graphics bg){
+        bg.drawImage(menu, 0, 0, largura, altura, null);
+    }
 
     public void upDate(Graphics bg)
     {

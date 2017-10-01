@@ -20,16 +20,17 @@ import javax.swing.JFrame;
  */
 public class FrmJogo extends javax.swing.JFrame implements Runnable {
 
-    private boolean esquerdo = false;
-    private boolean direito = false;
-    private boolean baixo = false;
-    private boolean cima = false;
-    private boolean reiniciar = false;
-    private boolean especial = false;
+    private boolean esquerdo    = false;
+    private boolean direito     = false;
+    private boolean baixo       = false;
+    private boolean cima        = false;
+    private boolean reiniciar   = false;
+    private boolean especial    = false;
     private boolean tiro;
     private double  proporcaoX, proporcaoY;
     private boolean restart = false;
-    
+    private boolean menu    = true;
+    private boolean sair = false;
     /**
      * Creates new form FrmJogo
      */
@@ -105,6 +106,15 @@ public class FrmJogo extends javax.swing.JFrame implements Runnable {
 
     private void formKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyPressed
 
+        if(evt.getExtendedKeyCode() == KeyEvent.VK_ENTER){
+            if(menu){
+                menu = false;
+            }
+        }
+        
+        if(evt.getKeyCode() == KeyEvent.VK_ESCAPE){
+            sair = true;
+        }
         
         if (evt.getKeyCode() == KeyEvent.VK_SPACE) {
             tiro = true;
@@ -130,7 +140,7 @@ public class FrmJogo extends javax.swing.JFrame implements Runnable {
             baixo = true;
         }
 
-        if(evt.getKeyCode() == KeyEvent.VK_R)
+        if(evt.getKeyCode()  == KeyEvent.VK_R)
             reiniciar = true;
             
 
@@ -138,19 +148,19 @@ public class FrmJogo extends javax.swing.JFrame implements Runnable {
 
     private void formKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyReleased
 
-        if (evt.getKeyCode() == KeyEvent.VK_SPACE) {
+        if (evt.getKeyCode()  == KeyEvent.VK_SPACE) {
             tiro = false;
         }
         
-        if (evt.getKeyCode() == KeyEvent.VK_SHIFT) {
+        if (evt.getKeyCode()  == KeyEvent.VK_SHIFT) {
             especial = false;
         }
 
-        if (evt.getKeyCode() == KeyEvent.VK_LEFT) {
+        if (evt.getKeyCode()  == KeyEvent.VK_LEFT) {
             esquerdo = false;
         }
 
-        if (evt.getKeyCode() == KeyEvent.VK_RIGHT) {
+        if (evt.getKeyCode()  == KeyEvent.VK_RIGHT) {
             direito = false;
         }
         
@@ -158,11 +168,11 @@ public class FrmJogo extends javax.swing.JFrame implements Runnable {
             cima = false;
         }
         
-        if (evt.getKeyCode() == KeyEvent.VK_DOWN) {
+        if (evt.getKeyCode()  == KeyEvent.VK_DOWN) {
             baixo = false;
         }
 
-        if(evt.getKeyCode() == KeyEvent.VK_R)
+        if(evt.getKeyCode()   == KeyEvent.VK_R)
             reiniciar = false;
         
     }//GEN-LAST:event_formKeyReleased
@@ -178,6 +188,11 @@ public class FrmJogo extends javax.swing.JFrame implements Runnable {
         
         while (true) {
 
+            if(sair){
+                this.dispose();
+                System.exit(0);
+            }
+            
             if(restart){
                 g = new Game(getWidth(),getHeight(), proporcaoX, proporcaoY);
                 g.initConfig();
@@ -189,7 +204,12 @@ public class FrmJogo extends javax.swing.JFrame implements Runnable {
 
             bg.setFont(new Font("Dialog",Font.ITALIC,(int)Math.ceil(25 * proporcaoY)));
             
-            g.upDate(bg);
+            if(!menu){
+                g.upDate(bg);
+            }else{
+                g.menu(bg);
+            }
+            
             restart = g.setPlayerActions(direito, esquerdo, cima, baixo, reiniciar, tiro, especial, bg);
 
             //Libera o Graphics
