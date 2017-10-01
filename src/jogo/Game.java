@@ -140,7 +140,7 @@ public class Game  {
             timeBola = System.currentTimeMillis();
         }
 
-        if(System.currentTimeMillis() - timeChefe >= 30000){
+        if(System.currentTimeMillis() - timeChefe >= 60000){
             criarChefe(bg);
         }
     }
