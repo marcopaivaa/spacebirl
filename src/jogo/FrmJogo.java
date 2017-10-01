@@ -28,6 +28,7 @@ public class FrmJogo extends javax.swing.JFrame implements Runnable {
     private boolean especial = false;
     private boolean tiro;
     private double  proporcaoX, proporcaoY;
+    private boolean restart = false;
     
     /**
      * Creates new form FrmJogo
@@ -37,11 +38,6 @@ public class FrmJogo extends javax.swing.JFrame implements Runnable {
         Dimension d = tk.getScreenSize();
         proporcaoX = d.width/1920.0;
         proporcaoY = d.height/1080.0;
-//        proporcaoX = 800/1920.0;
-//        proporcaoY = 600/1080.0;
-        
-        System.out.println(this.proporcaoX);
-        System.out.println(this.proporcaoY);
         
         initComponents();
         //Constroi um buffer duplo
@@ -64,14 +60,9 @@ public class FrmJogo extends javax.swing.JFrame implements Runnable {
             public void run() {
                 Toolkit tk = Toolkit.getDefaultToolkit();
                 Dimension d = tk.getScreenSize();
-                double proporcaoX = d.width/1920.0;
-                double proporcaoY = d.height/1080.0;
-//                proporcaoX = 800/1920.0;
-//                proporcaoY = 600/1080.0;
+
                 FrmJogo jf = new FrmJogo();
-//                jf.setSize((int)Math.ceil(1280 * proporcaoX),(int)Math.ceil(800 * proporcaoY));
                 jf.setSize(d.width,d.height);
-//                jf.setExtendedState(MAXIMIZED_BOTH);
                 jf.setVisible(true);
             }
         });
@@ -180,20 +171,25 @@ public class FrmJogo extends javax.swing.JFrame implements Runnable {
 
         BufferStrategy buffer = getBufferStrategy();
         Graphics bg;
-
         Game g = new Game(getWidth(),getHeight(), proporcaoX, proporcaoY);
         bg = buffer.getDrawGraphics();
-        g.initGame(bg);
-
+        g.initConfig();
+        
         while (true) {
 
+            if(restart){
+                g = new Game(getWidth(),getHeight(), proporcaoX, proporcaoY);
+                g.initConfig();
+                restart = false;
+            }
+            
             //Aloca o Graphics
             bg = buffer.getDrawGraphics();
 
             bg.setFont(new Font("Dialog",Font.ITALIC,(int)Math.ceil(25 * proporcaoY)));
             
             g.upDate(bg);
-            g.setPlayerActions(direito, esquerdo, cima, baixo, reiniciar, tiro, especial, bg);
+            restart = g.setPlayerActions(direito, esquerdo, cima, baixo, reiniciar, tiro, especial, bg);
 
             //Libera o Graphics
             bg.dispose();

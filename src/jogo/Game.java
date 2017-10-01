@@ -34,7 +34,9 @@ public class Game  {
     private int bonusLimit;
     private boolean hasBonus;
     private long speedtime;
+    private int nivelCount;
     private int nivel;
+    private int placar;
     private int countSuper ;
     private long lastCount;
     private BufferedImage img;
@@ -49,7 +51,9 @@ public class Game  {
     private BufferedImage bonus_shield; 
     private BufferedImage bonus_speed; 
     private BufferedImage super_portrait; 
-    private BufferedImage shift; 
+    private BufferedImage shift;
+    private long timeBola;
+    private long timeChefe;
     private boolean boss;
     private Chefe chefe;
     private long inicio;
@@ -61,8 +65,6 @@ public class Game  {
         this.altura = altura;
         this.proporcaoX = proporcaoX;
         this.proporcaoY = proporcaoY;
-        System.out.println(this.proporcaoX);
-        System.out.println(this.proporcaoY);
         initConfig();
         try {
             img = ImageIO.read(new File("./src/imagens/background.jpg"));
@@ -94,12 +96,16 @@ public class Game  {
         boss = false;
         tiro = false;
         hasBonus = false;
-        nivel = 3;
-        countSuper = 95;
-        minTimeBonus = 10000;
+        nivelCount = 0;
+        placar = 0;
+        nivel = 1;
+        countSuper = 0;
+        minTimeBonus = 5000;
         bonusLimit = 1;
         ultimoTiro = System.currentTimeMillis();
         ultimoTiroBoss = System.currentTimeMillis();
+        timeChefe = System.currentTimeMillis();
+        timeBola = System.currentTimeMillis();
         ultimoBonus = System.currentTimeMillis() + minTimeBonus;
         inicio = System.currentTimeMillis();
         add(player);
@@ -107,36 +113,36 @@ public class Game  {
     
     public boolean verificaPonto(ArrayList<Point> list,int x,int y){
         for(Point p: list){
-            if(((x >= p.x && x <= p.x + (int)Math.ceil(70 * proporcaoX)) || x < (int)Math.ceil(10 * proporcaoX)) && ((y >= p.y && y <= p.y + (int)Math.ceil(70 * proporcaoY)) || y < (int)Math.ceil(80 * proporcaoY)))
+            if((y >= p.y && y <= p.y + (int)Math.ceil(70 * proporcaoY)) || y < (int)Math.ceil(80 * proporcaoY))
                 return true;
         }
         return false;
     }
     
-    public void initGame(Graphics bg)
-    {
-        if(nivel < 3){
-            ArrayList <Point> pontos = new ArrayList<Point>();
-            
-            nivel ++;
-            int x,y;
+    public void criaInimigo(Graphics bg){
+        ArrayList <Point> pontos = new ArrayList<Point>();
+
+        
+        nivel = 1 + (nivelCount/10);
+        nivel = nivel > 5 ? 5 : nivel;
+
+        int x,y;
+        if(System.currentTimeMillis() - timeBola >= 3000 && boss == false && objetos.size() < 50){
             for(int i = 0; i < nivel; i++){
-                for(int j = 0; j < 10; j++){
-                    do{
-                        x = r.nextInt(largura-(int)Math.ceil(60 * proporcaoX));
-                        y = r.nextInt(altura/2);
-                    }while(verificaPonto(pontos,x,y));
-                    add(new Bola(x, y, (int)Math.ceil(70 * proporcaoY), (int)Math.ceil(70 * proporcaoY), Color.WHITE, proporcaoX));
-                    pontos.add(new Point(x,y));
-                }
+                do{
+                    x = r.nextInt(2);
+                    x = x == 0 ? -50 : this.largura;
+                    y = r.nextInt(altura/2);
+                }while(verificaPonto(pontos,x,y));
+                add(new Bola(x, y, (int)Math.ceil(70 * proporcaoY), (int)Math.ceil(70 * proporcaoY), Color.WHITE, proporcaoX));
+                pontos.add(new Point(x,y));
             }
+            timeBola = System.currentTimeMillis();
         }
-        else if(nivel == 3){
+
+        if(System.currentTimeMillis() - timeChefe >= 30000){
             criarChefe(bg);
         }
-        else{
-            venceuJogo(bg);
-        } 
     }
 
     public Base getPlayer() {
@@ -146,6 +152,7 @@ public class Game  {
     public void setPlayer(Base player) {
         this.player = player;
     }
+    
 
     public void upDate(Graphics bg)
     {
@@ -153,13 +160,11 @@ public class Game  {
             limpaTela(bg);
             if(fimDeJogo)
             {
-                if(venceu)
-                    venceuJogo(bg);
-                else
-                    fimDeJogo(bg);
+                fimDeJogo(bg);
             }
             else
             {
+                criaInimigo(bg);
                 tentaBonus();
                 speedBonus();
                 moverTodos();
@@ -171,9 +176,7 @@ public class Game  {
                 verificarDano();
                 verificarColisaoComGame();
                 verificarFim();
-                
-                if(zeroInimigos())
-                    initGame(bg);
+               
             }
         
     }
@@ -209,15 +212,6 @@ public class Game  {
         }
     }
     
-    public boolean zeroInimigos(){
-        for(Base b: objetos){
-            if(b instanceof Bola){
-                return false;
-            }
-        }
-        return true;
-    } 
-    
     public int getLargura() {
         return largura;
     }
@@ -239,7 +233,7 @@ public class Game  {
         objetos.add(b);
     }
 
-    public void setPlayerActions(boolean direito,
+    public boolean setPlayerActions(boolean direito,
                                 boolean esquerdo,
                                 boolean cima,
                                 boolean baixo,
@@ -249,9 +243,9 @@ public class Game  {
                                 Graphics bg) {
             
             if (direito && player.getX() < largura - player.getLargura()) {
-                player.setIncX((int)Math.ceil(2 * proporcaoX));
+                player.setIncX((int)Math.ceil(3 * proporcaoX));
             } else if (esquerdo && player.getX() > 0) {
-                player.setIncX((int)Math.ceil(2 * proporcaoX)*-1);
+                player.setIncX((int)Math.ceil(3 * proporcaoX)*-1);
             } else {
                 player.setIncX(0);
             }
@@ -276,12 +270,10 @@ public class Game  {
             
             if(fimDeJogo && reiniciar)
             {
-                reiniciar = false;
-                objetos.clear();
-                lixo.clear();
-                initConfig();
-                initGame(bg);
+                return true;
             }
+            
+            return false;
     }
 
     private void moverTodos() {
@@ -310,8 +302,11 @@ public class Game  {
                     lixo.add(b);
                     
                     if(b instanceof Bonus){
-                        if(b.getBonus() == 3)
+                        placar +=25;
+                        if(b.getBonus() == 3){
                             countSuper += 25;
+                            placar += 25;
+                        }
                         else
                             player.setBonus(b.getBonus());
                         bonusLimit++;
@@ -320,8 +315,10 @@ public class Game  {
                     else if(b instanceof Chefe)
                         while(player.getLife() > 0)
                             player.hit();
-                    else
+                    else{
                         player.hit();
+                        this.nivelCount++;
+                    }
                 }
             }
     }
@@ -330,7 +327,7 @@ public class Game  {
 
         for(Base b: objetos)
         {
-            if(b.getX() < 0)
+            if(b.getX() + b.getLargura( )< 0)
                 if(b instanceof Chefe)
                     b.setIncX((int)Math.ceil(3 * proporcaoX));
                 else
@@ -339,7 +336,7 @@ public class Game  {
             if(b.getY() < (int)Math.ceil(10 * proporcaoY))
                 b.setIncY((int)Math.ceil(31 * proporcaoY));
             
-            if(b.getX() > largura - b.getLargura())
+            if(b.getX() > largura)
                 if(b instanceof Chefe)
                     b.setIncX((int)Math.ceil(3 * proporcaoX)*-1);
                 else
@@ -358,6 +355,7 @@ public class Game  {
         long min = ms/60000;
         long seg = (ms%60000)/1000;
         bg.drawString("Tempo: " + String.format("%02d:%02d", min, seg),(int)(this.largura*.8),(int)(this.altura*.95));
+        bg.drawString("Placar: " + placar,(int)(this.largura*.45),(int)(this.altura*.95));
         
         if(countSuper < 100){
             if(lastCount + 500 < System.currentTimeMillis()){
@@ -435,7 +433,6 @@ public class Game  {
         }
     }
 
-    
     private void verificarFim() {
     
            if(player.getLife() == 0)
@@ -458,15 +455,17 @@ public class Game  {
         
         bg.setColor(Color.WHITE);
         String msg = "QUE NÃO VAI DAR O QUE PORRA! - Tecla 'R' para reiniciar.";
-        bg.drawString(msg,(int)Math.ceil(20 * proporcaoX),(int)Math.ceil(100 * proporcaoY));
+        bg.drawString(msg,(int)(largura * .30),(int)(altura * .45));
+        msg = "Sua pontuação: " + placar;
+        bg.drawString(msg,(int)(largura * .42),(int)(altura * .55));
     }
     
-    private void venceuJogo(Graphics bg) {
-        
-        bg.setColor(Color.WHITE);
-        String msg = "Você venceu o jogo, BIRL! - Tecla 'R' para reiniciar.";
-        bg.drawString(msg,(int)Math.ceil(20 * proporcaoX),(int)Math.ceil(100 * proporcaoY));
-    }
+//    private void venceuJogo(Graphics bg) {
+//        
+//        bg.setColor(Color.WHITE);
+//        String msg = "Você venceu o jogo, BIRL! - Tecla 'R' para reiniciar.";
+//        bg.drawString(msg,(int)Math.ceil(20 * proporcaoX),(int)Math.ceil(100 * proporcaoY));
+//    }
 
     private void tentaTiro() {
       if(tiro)
@@ -507,11 +506,13 @@ public class Game  {
                 if(x.colisaoCom(y) && x instanceof Tiro)
                 {
                     if(y instanceof Chefe){
+                        placar += 10;
                         int vida = y.hit();
                         if(vida <= 1){
                             boss = false;
-                            venceu = true;
-                            fimDeJogo = true;
+                            timeChefe = System.currentTimeMillis();
+                            lixo.add(y);
+                            placar += 1000;
                         }
                     }
                     else if(y instanceof Player){
@@ -519,18 +520,24 @@ public class Game  {
                         if(vida <= 0){
                             fimDeJogo = true;
                         }
-                    }else if(!(y instanceof Bonus))
-                        lixo.add(y);
+                    }else if(!(y instanceof Bonus)){
+                        if(x.getIncY() < 0){
+                            lixo.add(y);
+                            this.nivelCount++;
+                        }
+                    }
                     
                     if(!(y instanceof Bonus) && !(y instanceof Player)){
                         if(x.isEspecial())
                             if(x.getLife() > 0)
                                 x.hit();
                         
-                        if(!x.isEspecial() || x.getLife() < 1)
+                        if((!x.isEspecial() || x.getLife() < 1) || x.getIncY() > 0){
                             lixo.add(x);
-                        
+                            this.nivelCount++;
+                        }
                         countSuper++;
+                        placar +=10;
                     }
                 }
     }
