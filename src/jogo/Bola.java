@@ -41,6 +41,11 @@ public class Bola extends Base{
           //g.fillOval(x, y, largura, altura);
           g.drawImage(inimigo, x, y, largura, altura, null);
      }
+
+    @Override
+    public void redesenhar() {
+        
+    }
      
      
     

@@ -7,7 +7,10 @@ package jogo;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
 
 
 /**
@@ -56,6 +59,8 @@ public abstract class Base {
 
     public abstract void desenhar(Graphics g);
 
+    public abstract void redesenhar();
+    
     public int getX() {
         return x;
     }
@@ -70,6 +75,7 @@ public abstract class Base {
 
     public void setY(int y) {
         this.y = y;
+        rect.setLocation(x, y);
     }
 
     public int getIncX() {
@@ -94,6 +100,8 @@ public abstract class Base {
 
     public void setLargura(int largura) {
         this.largura = largura;
+        rect.setSize(largura, altura);
+        redesenhar();
     }
 
     public int getAltura() {
@@ -102,6 +110,8 @@ public abstract class Base {
 
     public void setAltura(int altura) {
         this.altura = altura;
+        rect.setSize(largura, altura);
+        redesenhar();
     }
 
     public Color getColor() {
@@ -149,4 +159,16 @@ public abstract class Base {
     public int getTipo() {
        return 0;
     }
+    
+    public BufferedImage scale(BufferedImage original, int newWidth,int newHeight){
+        BufferedImage resized = new BufferedImage(newWidth, newHeight, original.getType());
+        Graphics2D g = resized.createGraphics();
+        g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+            RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        g.drawImage(original, 0, 0, newWidth, newHeight, 0, 0, original.getWidth(),
+            original.getHeight(), null);
+        g.dispose();
+        return resized;
+    }
+    
 }

@@ -64,4 +64,8 @@ public class Bonus extends Base {
      public boolean timeOut(){
          return (createTime + 5000) < System.currentTimeMillis();
      }
+
+    @Override
+    public void redesenhar() {
+        }
 }

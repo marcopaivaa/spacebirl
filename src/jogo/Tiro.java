@@ -77,5 +77,10 @@ public class Tiro extends Base {
      public boolean isEspecial(){
          return especial;
      }
+
+    @Override
+    public void redesenhar() {
+        
+    }
      
 }

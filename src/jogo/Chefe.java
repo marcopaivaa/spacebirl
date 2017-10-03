@@ -49,5 +49,10 @@ public class Chefe extends Base {
     public int getMaxLife(){
         return maxLife;
     }
+
+    @Override
+    public void redesenhar() {
+        
+    }
    
 }

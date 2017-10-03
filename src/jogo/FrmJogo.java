@@ -295,7 +295,7 @@ public static void main(String args[]) {
             buffer.show();
 
             try {
-                Thread.sleep(10);
+                Thread.sleep(5);
             } catch (InterruptedException ex) {
 
             }

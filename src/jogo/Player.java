@@ -105,6 +105,10 @@ public class Player extends Base{
     public int getTipo(){
         return this.tipPlayer;
     }
+
+    @Override
+    public void redesenhar() {
+        }
 }
 
 
