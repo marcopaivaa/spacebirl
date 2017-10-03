@@ -451,6 +451,7 @@ public class Game  {
     
            if(player.getLife() == 0)
            {
+                playSound("./src/sounds/ceuTemPão.wav");
                 fimDeJogo = true;
                 objetos.clear();
                 lixo.clear();
@@ -468,7 +469,7 @@ public class Game  {
     public void fimDeJogo(Graphics bg) {
         
         bg.setColor(Color.WHITE);
-        String msg = "QUE NÃO VAI DAR O QUE PORRA! - Tecla 'R' para voltar ao menu.";
+        String msg = "Tecla 'R' para voltar ao menu.";
         bg.drawString(msg,(int)(largura * .30),(int)(altura * .45));
         msg = "Sua pontuação: " + placar;
         bg.drawString(msg,(int)(largura * .42),(int)(altura * .55));
@@ -644,8 +645,9 @@ public class Game  {
             chefe = new Chefe((int)Math.ceil(80 * proporcaoX),(int)Math.ceil(80 * proporcaoY),(int)Math.ceil(200 * proporcaoX),(int)Math.ceil(200 * proporcaoY),Color.PINK, proporcaoX);
             objetos.add(chefe); 
             boss = true;
+            playSound("./src/sounds/saindoDaJaula.wav");
+            
         }
-          
     }
     
     public void playSound(String soundName)
