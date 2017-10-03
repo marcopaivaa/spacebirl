@@ -9,7 +9,6 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -64,6 +63,20 @@ public class Meteor extends Base{
         g.drawImage(meteor, x, y, null);
     }
     
+    @Override
+    public void mover(int w, int h) {
+        this.x = x + incX;
+        rect.x = x;
+        this.y = y + incY;
+        rect.y = y;
+    }
+    
+    @Override
+    public void rotacionar(int rot){
+        meteor = rotate(meteor,rot);
+    }
+    
+    @Override
     public void redesenhar(){
         if(meteor != null && largura != 0 && altura !=0)
             meteor = scale(meteor, largura, altura);

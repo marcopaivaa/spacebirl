@@ -50,8 +50,11 @@ public class Chefe extends Base {
         return maxLife;
     }
 
-    @Override
-    public void redesenhar() {
+    public void rotacionar(int rot){
+        boss = rotate(boss,rot);
+    }
+    
+    public void redesenhar(){
         
     }
    

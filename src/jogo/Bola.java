@@ -42,8 +42,11 @@ public class Bola extends Base{
           g.drawImage(inimigo, x, y, largura, altura, null);
      }
 
-    @Override
-    public void redesenhar() {
+    public void rotacionar(int rot){
+        inimigo = rotate(inimigo,rot);
+    }
+    
+    public void redesenhar(){
         
     }
      

@@ -65,7 +65,11 @@ public class Bonus extends Base {
          return (createTime + 5000) < System.currentTimeMillis();
      }
 
-    @Override
-    public void redesenhar() {
-        }
+    public void rotacionar(int rot){
+        bonus = rotate(bonus,rot);
+    }
+    
+    public void redesenhar(){
+        
+    }
 }

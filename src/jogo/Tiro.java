@@ -65,6 +65,7 @@ public class Tiro extends Base {
           img = especial ? player_especial : img;
           g.drawImage(img, x, y, largura, altura, null);
      }
+     
      @Override
      public void mover(int w, int h) {
         this.x = x + incX;
@@ -78,9 +79,22 @@ public class Tiro extends Base {
          return especial;
      }
 
-    @Override
-    public void redesenhar() {
-        
+    public void rotacionar(int rot) {
+
+        if (player != null) {
+            player = rotate(player, rot);
+        }
+        if (player_especial != null) {
+            player_especial = rotate(player_especial, rot);
+        }
+        if (boss != null) {
+            boss = rotate(boss, rot);
+        }
+
+    }
+
+    public void redesenhar(){
+                   
     }
      
 }

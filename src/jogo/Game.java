@@ -12,10 +12,6 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import java.util.Random;
 import java.awt.Point;
-import java.net.URL;
-import javax.sound.midi.MidiSystem;
-import javax.sound.midi.Sequence;
-import javax.sound.midi.Sequencer;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
@@ -265,9 +261,9 @@ public class Game  {
             }
             
             if (baixo && player.getY() < altura - player.getAltura() -  (int)Math.ceil(80 * proporcaoY)) {
-                player.setIncY((int)Math.ceil(2 * proporcaoY));
+                player.setIncY((int)Math.ceil(3 * proporcaoY));
             } else if (cima && player.getY() > 0) {
-                player.setIncY((int)Math.ceil(-2 * proporcaoY));
+                player.setIncY((int)Math.ceil(-3 * proporcaoY));
             } else {
                 player.setIncY(0);
             }
@@ -341,23 +337,39 @@ public class Game  {
 
         for(Base b: objetos)
         {
-            if(b.getX() + b.getLargura( )< 0)
-                if(b instanceof Chefe)
-                    b.setIncX((int)Math.ceil(3 * proporcaoX));
-                else
-                    b.setIncX((int)Math.ceil(2 * proporcaoX));
-            
-            if(b.getY() < (int)Math.ceil(10 * proporcaoY))
-                b.setIncY((int)Math.ceil(31 * proporcaoY));
-            
-            if(b.getX() > largura)
-                if(b instanceof Chefe)
-                    b.setIncX((int)Math.ceil(3 * proporcaoX)*-1);
-                else
-                    b.setIncX((int)Math.ceil(2 * proporcaoX)*-1);
-            
-            if(b instanceof Tiro && (b.y - b.altura) <= 0){
-                lixo.add(b);
+            if(!(b instanceof Meteor)){
+                if(b.getX() + b.getLargura( )< 0)
+                    if(b instanceof Chefe)
+                        b.setIncX((int)Math.ceil(3 * proporcaoX));
+                    else
+                        b.setIncX((int)Math.ceil(2 * proporcaoX));
+
+                if(b.getY() < (int)Math.ceil(10 * proporcaoY))
+                    b.setIncY((int)Math.ceil(31 * proporcaoY));
+
+                if(b.getX() > largura)
+                    if(b instanceof Chefe)
+                        b.setIncX((int)Math.ceil(3 * proporcaoX)*-1);
+                    else
+                        b.setIncX((int)Math.ceil(2 * proporcaoX)*-1);
+
+                if(b instanceof Tiro && (b.y - b.altura) <= 0){
+                    lixo.add(b);
+                }
+            }
+            else
+            {
+                if(b.getX() + b.getLargura( ) + 50 < 0)
+                    lixo.add(b);
+
+                if(b.getY() + b.getAltura() + 50 < 0)
+                    lixo.add(b);
+
+                if(b.getX() - 50 > largura)
+                    lixo.add(b);
+
+                if(b.getY() - 50 > altura)
+                    lixo.add(b);  
             }
             
         }
@@ -438,7 +450,7 @@ public class Game  {
         
         for(Base b: objetos)
         {
-           if(b.getY()+b.altura > altura)
+           if(b.getY()+b.altura > altura  && !(b instanceof Meteor))
            {
                if(!(b instanceof Tiro))
                     player.hit();
@@ -451,11 +463,12 @@ public class Game  {
     
            if(player.getLife() == 0)
            {
-                playSound("./src/sounds/ceuTemPão.wav");
+                playSound("ceuTemPão.wav");
                 fimDeJogo = true;
                 objetos.clear();
                 lixo.clear();
                 objetos.add(player);
+                playSound("HelloDarknessFunk.wav");
                 
            }
            else
@@ -473,6 +486,12 @@ public class Game  {
         bg.drawString(msg,(int)(largura * .30),(int)(altura * .45));
         msg = "Sua pontuação: " + placar;
         bg.drawString(msg,(int)(largura * .42),(int)(altura * .55));
+        try {
+            bg.drawImage(ImageIO.read(new File("./src/imagens/SapoMeme.png")), (int)(largura * .60),(int)(altura * .60), null);
+        } catch (IOException ex) {
+            Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
     }
 
     public void tentaTiro() {
@@ -490,7 +509,7 @@ public class Game  {
             t.incX=0;
             t.incY=(int)Math.ceil((-3 * multiplicador) * proporcaoY);
             objetos.add(t);
-            playSound("./src/sounds/birl.wav");
+            playSound("birl.wav");
         }
       } 
       
@@ -579,60 +598,30 @@ public class Game  {
     private void verificaMeteor() {
         ArrayList<Meteor> meteors = new ArrayList<Meteor>();
         for (Base x : objetos) {
-            for (Base y : objetos)
-            {
-                if (x.colisaoCom(y) && x instanceof Meteor) {
-                        if(y instanceof Chefe){
-                        placar += 10;
-                        int vida = y.hit();
-                        if(vida <= 1){
-                            boss = false;
-                            timeChefe = System.currentTimeMillis();
-                            lixo.add(y);
-                            placar += 1000;
-                        }
-                    }
-                    else if(y instanceof Player){
+            for (Base y : objetos) {
+                if (x.colisaoCom(y) && x instanceof Meteor && (y instanceof Player || y instanceof Tiro )) {
+                    if (y instanceof Player) {
                         int vida = y.getLife();
-                        if(vida <= 0){
+                        if (vida <= 0) {
                             fimDeJogo = true;
                         }
-                    }else if(!(y instanceof Bonus)){
-                        if(x.getIncY() < 0){
-                            lixo.add(y);
-                            this.nivelCount++;
-                        }
                     }
-                    
-                    if(!(y instanceof Bonus) && !(y instanceof Player)){
-                        if(x.isEspecial())
-                            if(x.getLife() > 0)
-                                x.hit();
-                        
-                        if((!x.isEspecial() || x.getLife() < 1) || x.getIncY() > 0){
-                            lixo.add(x);
-                            this.nivelCount++;
-                        }
-                        countSuper++;
-                        placar +=10;
+                    if (y instanceof Tiro) {
+                        lixo.add(y);
                     }
-                    
+                    lixo.add(x);
                     Meteor me = (Meteor) x;
-                        if(me.tipo>1)
-                        {
-                            me.tipo--;
-                            for(int i = -10;i<=10;i+=20)
-                            {
-                                for(int j = -10; j<=10;j+=20)
-                                {
-                                    Meteor m = new Meteor(x.x+i, x.y+j, me.tipo,me.color);
-                                    m.incX = i/10;
-                                    m.incY = j/10;
-                                    meteors.add(m);
-                                }
+                    if (me.tipo > 1) {
+                        me.tipo--;
+                        for (int i = -10; i <= 10; i += 20) {
+                            for (int j = -10; j <= 10; j += 20) {
+                                Meteor m = new Meteor(x.x + i, x.y + j, me.tipo, me.color);
+                                m.incX = i / 10;
+                                m.incY = j / 10;
+                                meteors.add(m);
                             }
                         }
-                    
+                    }
                 }
             }
         }
@@ -645,7 +634,7 @@ public class Game  {
             chefe = new Chefe((int)Math.ceil(80 * proporcaoX),(int)Math.ceil(80 * proporcaoY),(int)Math.ceil(200 * proporcaoX),(int)Math.ceil(200 * proporcaoY),Color.PINK, proporcaoX);
             objetos.add(chefe); 
             boss = true;
-            playSound("./src/sounds/saindoDaJaula.wav");
+            playSound("saindoDaJaula.wav");
             
         }
     }
@@ -654,7 +643,7 @@ public class Game  {
     {
        try 
        {
-        AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(soundName).getAbsoluteFile());
+        AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("./src/sounds/" + soundName).getAbsoluteFile());
         Clip clip = AudioSystem.getClip();
         clip.open(audioInputStream);
 

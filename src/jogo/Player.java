@@ -23,12 +23,15 @@ public class Player extends Base{
     private BufferedImage player;
     private BufferedImage player_shield;
     private int bonus = 0;
+    private int posOriX, posOriY;
     private boolean speedAtivo = false;
     private int tipPlayer = 0;
     
      public Player(int x, int y, int largura, int altura, Color color, int tipPlayer)
      {
          super(x, y, largura, altura, color);
+         posOriX = x;
+         posOriY = y;
          this.tipPlayer = tipPlayer;
          try {
             if(tipPlayer == 0){
@@ -79,6 +82,8 @@ public class Player extends Base{
             bonus = 0;
             return vida;
         }
+        setX(posOriX);
+        setY(posOriY);
         return vida--;
     }
     
@@ -106,9 +111,14 @@ public class Player extends Base{
         return this.tipPlayer;
     }
 
-    @Override
-    public void redesenhar() {
-        }
+    public void rotacionar(int rot){
+        player = rotate(player,rot);
+        player_shield = rotate(player_shield,rot);
+    }
+    
+    public void redesenhar(){
+        
+    }
 }
 
 

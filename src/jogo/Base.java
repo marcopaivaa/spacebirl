@@ -58,6 +58,8 @@ public abstract class Base {
     }
 
     public abstract void desenhar(Graphics g);
+    
+    public abstract void rotacionar(int rot);
 
     public abstract void redesenhar();
     
@@ -169,6 +171,16 @@ public abstract class Base {
             original.getHeight(), null);
         g.dispose();
         return resized;
+    }
+    
+    public static BufferedImage rotate(BufferedImage bimg, double angle){
+        int w = bimg.getWidth();    
+        int h = bimg.getHeight();
+        Graphics2D graphic = bimg.createGraphics();
+        graphic.rotate(Math.toRadians(angle), w/2, h/2);
+        graphic.drawImage(bimg, null, 0, 0);
+        graphic.dispose();
+        return bimg;
     }
     
 }
