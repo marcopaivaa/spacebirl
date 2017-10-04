@@ -19,15 +19,16 @@ import static jogo.Base.rotate;
  *
  * @author jsilva
  */
-public class Destroir extends Base{
+public class Destruir extends Base{
     
     protected BufferedImage destroir;
-
-    public Destroir(int x, int y, int width, int height) {
+    protected File f;
+    
+    public Destruir(int x, int y, int width, int height) {
         super(x, y, width, height, Color.BLACK);
         try {
-            File f = new File("./src/imagens/destruir.png");
-            destroir= ImageIO.read(f);  
+            f = new File("./src/imagens/destruir.png");
+            destroir = ImageIO.read(f);  
         } catch (IOException ex) {
             Logger.getLogger(Meteor.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -54,6 +55,11 @@ public class Destroir extends Base{
     
     @Override
     public void redesenhar(){
+        try { 
+            destroir = ImageIO.read(f);
+        } catch (IOException ex) {
+            Logger.getLogger(Destruir.class.getName()).log(Level.SEVERE, null, ex);
+        }
         if(destroir != null && largura != 0 && altura !=0)
             destroir = scale(destroir, largura, altura);
     }
