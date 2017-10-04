@@ -25,7 +25,7 @@ public class Game  {
     
     ArrayList<Base> objetos;
     ArrayList <Base> lixo;
-    ArrayList <Base> destroir;
+    ArrayList <Base> destruir;
     ArrayList <Clip> sounds;
     Base player;
     int largura;
@@ -75,6 +75,15 @@ public class Game  {
         this.altura = altura;
         this.proporcaoX = proporcaoX;
         this.proporcaoY = proporcaoY;
+        sounds = new ArrayList<Clip>();
+        addSound("morri.wav");
+        addSound("saindoDaJaula.wav");
+        addSound("mentira.wav");
+        addSound("ceuTemPão.wav");
+        addSound("HelloDarknessFunk.wav");
+        addSound("errouuu.wav");
+        addSound("birl.wav");
+        addSound("tetra.wav");
         initConfig();
         try {
             menu = ImageIO.read(new File("./src/imagens/menuSpace.png"));
@@ -101,14 +110,12 @@ public class Game  {
                 (int)Math.ceil(100 * proporcaoX), (int)Math.ceil(80 * proporcaoY), Color.WHITE, 0);
         objetos = new ArrayList<Base>();
         lixo = new ArrayList<Base>();
-        destroir = new ArrayList<Base>();
-        sounds = new ArrayList<Clip>();
+        destruir = new ArrayList<Base>();
+        
         for(Clip c : sounds)
         {
             c.stop();
-            c.close();
         }
-        sounds.clear();
         r = new Random();
         ganhou = true;
         som = false;
@@ -198,6 +205,7 @@ public class Game  {
                 moverTodos();
                 desenharPlacar(bg);
                 desenharTodos(bg);
+                destruir(bg);
                 tentaTiro();
                 verificaTiro(bg);
                 verificarColisaoComPlayer();
@@ -205,9 +213,8 @@ public class Game  {
                 verificaMeteor();
                 verificarDano();
                 verificarColisaoComGame();
-                playSound();
                 verificarFim(bg);
-               
+                
             }
         
     }
@@ -299,9 +306,7 @@ public class Game  {
                 for(Clip c : sounds)
                 {
                     c.stop();
-                    c.close();
                 }
-                sounds.clear();
                 return true;
             }
             
@@ -376,7 +381,7 @@ public class Game  {
                         b.setIncX((int)Math.ceil(2 * proporcaoX)*-1);
 
                 if(b instanceof Tiro && (b.y - b.altura) <= 0){
-                    addSound("errouuu.wav");
+                    playSound(5);
                     lixo.add(b);
                 }
             }
@@ -494,9 +499,7 @@ public class Game  {
                 for(Clip c : sounds)
                 {
                     c.stop();
-                    c.close();
                 }
-                sounds.clear();
            }
            else
            {
@@ -510,34 +513,40 @@ public class Game  {
         if(ganhou)
         {
             bg.setColor(Color.WHITE);
-            bg.setFont(new Font("Dialog",Font.ITALIC,50));
+            bg.setFont(new Font("Dialog",Font.ITALIC,70));
             String msg = "GANHOUUUU";
-            bg.drawString(msg,(int)(largura * .30),(int)(altura * .45));
+            bg.drawString(msg,(int)(largura * .35),(int)(altura * .45));
+            bg.setFont(new Font("Dialog",Font.ITALIC,30));
+            msg = "CALCULANDO PONTOS DA VITÓRIA...";
+            bg.drawString(msg,(int)(largura * .30),(int)(altura * .60));
             ganhou = false;
             som = true;
+            
         }
         else if(som)
         {
+            playSound(7);
             try {
-                Thread.sleep(2000);
+                Thread.sleep(12000);
             } catch (InterruptedException ex) {
 
             }
-            addSound("mentira.wav");
-            playSound();
+            playSound(2);
             try {
                 Thread.sleep(5000);
             } catch (InterruptedException ex) {
             }
-            addSound("ceuTemPão.wav");
-            addSound("HelloDarknessFunk.wav");
+            playSound(3);
+            playSound(4);
             som = false;
         }
         else
         {
-            playSound();
+            bg.setFont(new Font("Dialog",Font.ITALIC,40));
             bg.setColor(Color.WHITE);
-            String msg = "Tecla 'R' para voltar ao menu.";
+            String msg = "E MORREU...";
+            bg.drawString(msg,(int)(largura * .30),(int)(altura * .30));
+            msg  = "Tecla 'R' para voltar ao menu.";
             bg.drawString(msg,(int)(largura * .30),(int)(altura * .45));
             msg = "Sua pontuação: " + placar;
             bg.drawString(msg,(int)(largura * .42),(int)(altura * .55));
@@ -564,7 +573,7 @@ public class Game  {
             t.incX=0;
             t.incY=(int)Math.ceil((-3 * multiplicador) * proporcaoY);
             objetos.add(t);
-            addSound("birl.wav");
+            playSound(6);
         }
       } 
       
@@ -689,76 +698,53 @@ public class Game  {
             chefe = new Chefe((int)Math.ceil(80 * proporcaoX),(int)Math.ceil(80 * proporcaoY),(int)Math.ceil(200 * proporcaoX),(int)Math.ceil(200 * proporcaoY),Color.PINK, proporcaoX);
             objetos.add(chefe); 
             boss = true;
-            addSound("saindoDaJaula.wav");
+            playSound(1);
+            
         }
     }
     
-    public void playSound() {
-        ArrayList<Clip> ret = new ArrayList<Clip>();
-        for(Clip c : sounds){
-            if(c.getFramePosition() == c.getFrameLength())
-            {
-                c.stop();
-                c.close();
-                ret.add(c);
-            }
-            else
-            {
-                if(!(c.isRunning()))
-                {
-                    try {
-                        c.start();
-                    } catch (Exception ex) {
-                        System.out.println("Error with playing sound.");
-                        ex.printStackTrace();
-                    }
-                }
-            }
-        }
-        ret.clear();
+    public void playSound(int sound) {
+        Clip c = sounds.get(sound);
+        c.stop();
+        c.setFramePosition(0);
+        c.start();
     }
     
-    public void addSound(String soundName)
-    {
-        try 
-        {
+    public void addSound(String soundName) {
+        try {
             AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("./src/sounds/" + soundName).getAbsoluteFile());
             Clip clip = AudioSystem.getClip();
             clip.open(audioInputStream);
             sounds.add(clip);
-        }
-        catch(Exception ex)
-        {
+        } catch (Exception ex) {
             System.out.println("Error with playing sound.");
-            ex.printStackTrace( );
+            ex.printStackTrace();
         }
     }
-    
-    public void destruir(Graphics bg){
+
+    public void destruir(Graphics bg) {
         int cont = 0;
-        for(Base l : lixo)
-        {
-            if(l instanceof Bola)
-            {
+        for (Base l : lixo) {
+            if (l instanceof Bola) {
                 cont++;
+                destruir.add(new Destruir(l.getX() + (l.getLargura() / 2) - 1, l.getY() + (l.getAltura() / 2) - 1, 1, 1));
             }
-            destroir.add(new Destroir((l.getLargura()/2)-1,(l.getAltura()/2)-1,1,1));
+
         }
-        if(cont>0)
-            addSound("morri.wav");
-        for(Base d : destroir)
-        {
-            if(d.getLargura() < 50)
-            {
-                d.setX(d.getX()-1);
-                d.setY(d.getY()-1);
-                d.setLargura(d.getLargura()+2);
-                d.setAltura(d.getAltura()+2);
-                d.desenhar(bg);
-            }
-            else
-            {
-                lixo.add(d);
+        if (cont > 0) {
+            playSound(0);
+        }
+        if (destruir != null) {
+            for (Base d : destruir) {
+                if (d.getLargura() < 50) {
+                    d.setX(d.getX() - 1);
+                    d.setY(d.getY() - 1);
+                    d.setLargura(d.getLargura() + 2);
+                    d.setAltura(d.getAltura() + 2);
+                    d.desenhar(bg);
+                } else {
+                    lixo.add(d);
+                }
             }
         }
         lixo.clear();
