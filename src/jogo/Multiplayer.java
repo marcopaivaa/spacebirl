@@ -376,7 +376,7 @@ public class Multiplayer extends Game{
     }
     
     @Override
-    public void verificarFim() {
+    public void verificarFim(Graphics bg) {
     
            if(player.getLife() == 0 || player2.getLife() == 0)
            {
