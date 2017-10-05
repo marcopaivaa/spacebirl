@@ -55,11 +55,6 @@ public class Destruir extends Base{
     
     @Override
     public void redesenhar(){
-        try { 
-            destroir = ImageIO.read(f);
-        } catch (IOException ex) {
-            Logger.getLogger(Destruir.class.getName()).log(Level.SEVERE, null, ex);
-        }
         if(destroir != null && largura != 0 && altura !=0)
             destroir = scale(destroir, largura, altura);
     }

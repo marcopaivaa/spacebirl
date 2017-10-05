@@ -727,7 +727,7 @@ public class Game  {
         for (Base l : lixo) {
             if (l instanceof Bola) {
                 cont++;
-                destruir.add(new Destruir(l.getX() + (l.getLargura() / 2) - 1, l.getY() + (l.getAltura() / 2) - 1, 1, 1));
+                destruir.add(new Destruir(l.getX() + (l.getLargura() / 2) - 1, l.getY() + (l.getAltura() / 2) - 1, 40, 40));
             }
 
         }
@@ -736,7 +736,7 @@ public class Game  {
         }
         if (destruir != null) {
             for (Base d : destruir) {
-                if (d.getLargura() < 50) {
+                if (d.getLargura() < 70) {
                     d.setX(d.getX() - 1);
                     d.setY(d.getY() - 1);
                     d.setLargura(d.getLargura() + 2);
