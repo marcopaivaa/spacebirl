@@ -13,9 +13,16 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import java.util.Random;
 import java.awt.Point;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -520,16 +527,66 @@ public class Game  {
             msg = "CALCULANDO PONTOS DA VITÓRIA...";
             bg.drawString(msg,(int)(largura * .30),(int)(altura * .60));
             ganhou = false;
-            som = true;
-            
+            som = true;    
         }
-        else if(som)
-        {
+        else if (som) {
             playSound(7);
+            ArrayList<String> listPlacar = new ArrayList<String>();
+            File arquivo = new File("./src/placar.txt");
             try {
-                Thread.sleep(12000);
-            } catch (InterruptedException ex) {
-
+                if (!arquivo.exists()) {
+                    //cria um arquivo (vazio)
+                    arquivo.createNewFile();
+                }
+                
+                //faz a leitura do arquivo
+                FileReader fr = new FileReader(arquivo);
+                BufferedReader br = new BufferedReader(fr);
+                //enquanto houver mais linhas
+                while (br.ready()) {
+                    //lê a proxima linha
+                    listPlacar.add(br.readLine());
+                }
+                br.close();
+                fr.close();
+                int index = -1;
+                int cont = 0;
+                for(String s : listPlacar)
+                {
+                    if(!"".equals(s))
+                    {
+                        if(placar > Integer.parseInt(s.split(" - ")[1]))
+                        {
+                            index = cont;
+                            break;
+                        }
+                    }
+                    cont++;
+                }
+                if(listPlacar.size()<10 && index == -1)
+                {
+                    listPlacar.add(JOptionPane.showInputDialog("Digite seu nome: ") + " - " + placar);
+                }
+                else if(index != -1)
+                {
+                    listPlacar.add(index,JOptionPane.showInputDialog("Digite seu nome: ") + " - " + placar);
+                }
+                //escreve no arquivo
+                FileWriter fw = new FileWriter(arquivo);
+                BufferedWriter bw = new BufferedWriter(fw);
+                for(int i = 0;i<10 && i<listPlacar.size();i++)
+                {
+                    bw.write(listPlacar.get(i));
+                    bw.newLine();
+                }
+                bw.close();
+                fw.close();
+                
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            for (Clip c : sounds) {
+                c.stop();
             }
             playSound(2);
             try {
@@ -542,16 +599,35 @@ public class Game  {
         }
         else
         {
-            bg.setFont(new Font("Dialog",Font.ITALIC,40));
+            bg.setFont(new Font("Dialog", Font.ITALIC, 40));
             bg.setColor(Color.WHITE);
             String msg = "E MORREU...";
-            bg.drawString(msg,(int)(largura * .30),(int)(altura * .30));
-            msg  = "Tecla 'R' para voltar ao menu.";
-            bg.drawString(msg,(int)(largura * .30),(int)(altura * .45));
+            bg.drawString(msg, (int) (largura * .10), (int) (altura * .20));
+            msg = "Tecla 'R' para voltar ao menu.";
+            bg.drawString(msg, (int) (largura * .10), (int) (altura * .30));
             msg = "Sua pontuação: " + placar;
-            bg.drawString(msg,(int)(largura * .42),(int)(altura * .55));
+            bg.drawString(msg, (int) (largura * .22), (int) (altura * .45));
+            msg = "Placar: ";
+            bg.drawString(msg, (int) (largura * .60), (int) (altura * .20));
+            double tam = .30;
+            File arquivo = new File("./src/placar.txt");
             try {
-                bg.drawImage(ImageIO.read(new File("./src/imagens/SapoMeme.png")), (int)(largura * .60),(int)(altura * .60), null);
+                FileReader fr = new FileReader(arquivo);
+                BufferedReader br = new BufferedReader(fr);
+                //enquanto houver mais linhas
+                while (br.ready()) {
+                    //lê a proxima linha
+                    bg.drawString(br.readLine(), (int) (largura * .60), (int) (altura * tam));
+                    tam += .05;
+                }
+                br.close();
+                fr.close();
+            } catch (IOException ex) {
+                Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            try {
+                bg.drawImage(ImageIO.read(new File("./src/imagens/SapoMeme.png")), (int) (largura * .20), (int) (altura * .60), null);
             } catch (IOException ex) {
                 Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -748,6 +824,28 @@ public class Game  {
             }
         }
         lixo.clear();
+    }
+    
+    public void mostraPlacar(Graphics bg)
+    {
+            String msg = "Placar: ";
+            bg.drawString(msg, (int) (largura * .60), (int) (altura * .20));
+            double tam = .30;
+            File arquivo = new File("./src/placar.txt");
+            try {
+                FileReader fr = new FileReader(arquivo);
+                BufferedReader br = new BufferedReader(fr);
+                //enquanto houver mais linhas
+                while (br.ready()) {
+                    //lê a proxima linha
+                    bg.drawString(br.readLine(), (int) (largura * .60), (int) (altura * tam));
+                    tam += .05;
+                }
+                br.close();
+                fr.close();
+            } catch (IOException ex) {
+                Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+            }
     }
     
 }

@@ -39,6 +39,7 @@ public class FrmJogo extends javax.swing.JFrame implements Runnable {
     private boolean sair = false;
     private boolean multi = false;
     private boolean flag = false;
+    private boolean placar = false;
 
     /**
      * Creates new form FrmJogo
@@ -184,6 +185,9 @@ public static void main(String args[]) {
 
         if(evt.getKeyCode()  == KeyEvent.VK_R)
             reiniciar = true;
+        
+        if(evt.getKeyCode()  == KeyEvent.VK_P)
+            placar = true;
     }//GEN-LAST:event_formKeyPressed
 
     private void formKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyReleased
@@ -237,6 +241,9 @@ public static void main(String args[]) {
 
         if(evt.getKeyCode()   == KeyEvent.VK_R)
             reiniciar = false;
+        
+        if(evt.getKeyCode()  == KeyEvent.VK_P)
+            placar = false;
     }//GEN-LAST:event_formKeyReleased
 
     public void run() {
@@ -265,13 +272,27 @@ public static void main(String args[]) {
                 g = new Multiplayer(getWidth(),getHeight(), proporcaoX, proporcaoY);
             }
             
+            if(placar)
+            {
+                g.mostraPlacar(bg);
+            }
+            
             if(restart){
                 g = new Game(getWidth(),getHeight(), proporcaoX, proporcaoY);
                 g.menu(bg);
+                direito = false;
+                direito2 = false;
+                esquerdo = false;
+                esquerdo2 = false;
+                cima = false;
+                cima2 = false;
+                baixo = false;
+                baixo2 = false;
                 menu = true;
                 restart = false;
                 multi = false;
             }
+            
             
             //Aloca o Graphics
             bg = buffer.getDrawGraphics();
