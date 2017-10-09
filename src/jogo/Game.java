@@ -477,7 +477,7 @@ public class Game  {
 
     private void limpaTela(Graphics bg) {
         bg.fillRect(0, 0, largura, altura);
-        bg.drawImage(img, 0, 0,largura, altura, null);    
+        bg.drawImage(img, 0, 0,largura, altura, null); 
     }
 
     private void verificarDano() {
@@ -565,11 +565,21 @@ public class Game  {
                 }
                 if(listPlacar.size()<10 && index == -1)
                 {
-                    listPlacar.add(JOptionPane.showInputDialog("Digite seu nome: ") + " - " + placar);
+                    String name = JOptionPane.showInputDialog("Digite seu nome: ");
+                    if("".equals(name))
+                    {
+                        name = "Player";
+                    }
+                    listPlacar.add(name + " - " + placar);
                 }
                 else if(index != -1)
                 {
-                    listPlacar.add(index,JOptionPane.showInputDialog("Digite seu nome: ") + " - " + placar);
+                    String name = JOptionPane.showInputDialog("Digite seu nome: ");
+                    if("".equals(name))
+                    {
+                        name = "Player";
+                    }
+                    listPlacar.add(index,name + " - " + placar);
                 }
                 //escreve no arquivo
                 FileWriter fw = new FileWriter(arquivo);
@@ -828,8 +838,11 @@ public class Game  {
     
     public void mostraPlacar(Graphics bg)
     {
+            limpaTela(bg);
+            bg.setColor(Color.WHITE);
+            bg.setFont(new Font("Dialog", Font.ITALIC, 40));
             String msg = "Placar: ";
-            bg.drawString(msg, (int) (largura * .60), (int) (altura * .20));
+            bg.drawString(msg, (int) (largura * .40), (int) (altura * .20));
             double tam = .30;
             File arquivo = new File("./src/placar.txt");
             try {
@@ -838,7 +851,7 @@ public class Game  {
                 //enquanto houver mais linhas
                 while (br.ready()) {
                     //lê a proxima linha
-                    bg.drawString(br.readLine(), (int) (largura * .60), (int) (altura * tam));
+                    bg.drawString(br.readLine(), (int) (largura * .45), (int) (altura * tam));
                     tam += .05;
                 }
                 br.close();
@@ -846,6 +859,8 @@ public class Game  {
             } catch (IOException ex) {
                 Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
             }
+            msg = "Pressione P para sair";
+            bg.drawString(msg, (int) (largura * .40), (int) (altura * .90));
     }
     
 }

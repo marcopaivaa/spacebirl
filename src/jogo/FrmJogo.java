@@ -187,7 +187,10 @@ public static void main(String args[]) {
             reiniciar = true;
         
         if(evt.getKeyCode()  == KeyEvent.VK_P)
-            placar = true;
+            if(placar)
+                placar = false;
+            else
+                placar = true;
     }//GEN-LAST:event_formKeyPressed
 
     private void formKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyReleased
@@ -242,8 +245,7 @@ public static void main(String args[]) {
         if(evt.getKeyCode()   == KeyEvent.VK_R)
             reiniciar = false;
         
-        if(evt.getKeyCode()  == KeyEvent.VK_P)
-            placar = false;
+        
     }//GEN-LAST:event_formKeyReleased
 
     public void run() {
@@ -272,10 +274,7 @@ public static void main(String args[]) {
                 g = new Multiplayer(getWidth(),getHeight(), proporcaoX, proporcaoY);
             }
             
-            if(placar)
-            {
-                g.mostraPlacar(bg);
-            }
+            
             
             if(restart){
                 g = new Game(getWidth(),getHeight(), proporcaoX, proporcaoY);
@@ -302,13 +301,23 @@ public static void main(String args[]) {
             if(!menu){
                     g.upDate(bg);
             }else{
-                g.menu(bg);
+                if(placar)
+                {
+                    g.mostraPlacar(bg);
+                }
+                else{
+                    g.menu(bg);
+                }
             }
             
             restart = g.setPlayerActions(direito, esquerdo, cima, baixo, tiro, especial,
                                          direito2, esquerdo2, cima2, baixo2, tiro2, especial2,
                                          reiniciar, bg);
-
+            
+            bg.setFont(new Font("Dialog", Font.ITALIC, 20));
+            String msg = "BETA";
+            bg.drawString(msg, (int) (getWidth() * .95), (int) (getHeight() * .98));
+            
             //Libera o Graphics
             bg.dispose();
 
